@@ -197,7 +197,7 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
         <div className="flex flex-col lg:flex-row lg:items-stretch gap-4">
           {/* 左侧：Emoji和名称 */}
           <div className="flex items-center gap-4 flex-1 min-w-0">
-            <div className="relative group">
+            <div>
               <span className="text-3xl">{opt.emoji}</span>
               <div className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <div className={`flex flex-wrap gap-1 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'} p-2 rounded-lg shadow-lg border ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
@@ -270,16 +270,16 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
   return (
     <div className="mb-10">
       <div className="flex justify-between items-center mb-6">
-        <div className="flex-1">
+        <div>
           <h2 className="text-2xl font-bold">管理选项</h2>
-        </div>
-        <div className={`text-right ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-          当前选项数: <span className="font-bold text-blue-600 dark:text-blue-400">{options.length}</span>
-          {mode !== 'preference' && (
-            <span className="ml-4">
-              总权重: <span className="font-bold">{getTotalWeight()}</span>
-            </span>
-          )}
+          <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+            当前选项数: <span className="font-bold text-blue-600 dark:text-blue-400">{options.length}</span>
+            {mode !== 'preference' && (
+              <span className="ml-4">
+                总权重: <span className="font-bold">{getTotalWeight()}</span>
+              </span>
+            )}
+          </p>
         </div>
       </div>
 
@@ -502,7 +502,10 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
           ? 'border-gray-300' 
           : 'border-gray-700'
         }`}>
-          <div className="max-h-96 overflow-y-auto"> {/* 添加滚动容器 */}
+          <div 
+              className="overflow-y-auto scroll-container" 
+              style={{ height: '283px' }} // 固定高度
+            > {/* 添加滚动容器 */}
             <div className="p-4">
               {options.map((opt, index) => renderOptionItem(opt, index))}
             </div>

@@ -197,7 +197,7 @@ export default function MobileOptionManager({ options, setOptions, mode, theme, 
         <div className="flex flex-col gap-4">
           {/* 上部分：Emoji和名称 */}
           <div className="flex items-center gap-4 flex-1 min-w-0">
-            <div className="relative group">
+            <div>
               <span className="text-3xl">{opt.emoji}</span>
               <div className="absolute -top-2 -right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                 <div className={`flex flex-wrap gap-1 ${theme === 'light' ? 'bg-white' : 'bg-gray-800'} p-2 rounded-lg shadow-lg border ${theme === 'light' ? 'border-gray-200' : 'border-gray-700'}`}>
@@ -247,6 +247,7 @@ export default function MobileOptionManager({ options, setOptions, mode, theme, 
                 onChange={(newWeight) => updateWeight(opt.id, newWeight)}
                 disabled={mode !== 'preference'}
                 showPercentage={true}
+                showInput={false}  // 隐藏输入框
               />
             </div>
             
@@ -269,17 +270,17 @@ export default function MobileOptionManager({ options, setOptions, mode, theme, 
 
   return (
     <div className="mb-10">
-      <div className="flex justify-between items-center mb-6">
-        <div className="flex-1">
+      <div className="flex flex-col items-start mb-6 gap-3">
+        <div>
           <h2 className="text-xl font-bold">管理选项</h2>
-        </div>
-        <div className={`text-right ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
-          当前选项数: <span className="font-bold text-blue-600 dark:text-blue-400">{options.length}</span>
-          {mode !== 'preference' && (
-            <span className="ml-4">
-              总权重: <span className="font-bold">{getTotalWeight()}</span>
-            </span>
-          )}
+          <p className={`${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
+            当前选项数: <span className="font-bold text-blue-600 dark:text-blue-400">{options.length}</span>
+            {mode !== 'preference' && (
+              <span className="ml-4">
+                总权重: <span className="font-bold">{getTotalWeight()}</span>
+              </span>
+            )}
+          </p>
         </div>
       </div>
 
@@ -411,7 +412,7 @@ export default function MobileOptionManager({ options, setOptions, mode, theme, 
 
               {/* 完整的Emoji库 */}
               <div 
-                className={`grid grid-cols-3 gap-2 max-h-80 overflow-y-auto p-4 rounded-lg ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'}`}
+                className={`grid grid-cols-4 gap-2 max-h-80 overflow-y-auto p-4 rounded-lg ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'}`}
                 onDragOver={(e) => {
                   e.preventDefault()
                   e.dataTransfer.dropEffect = 'move'

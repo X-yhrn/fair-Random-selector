@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function WeightSlider({ value, onChange, disabled = false, showPercentage = false }) {
+export default function WeightSlider({ value, onChange, disabled = false, showPercentage = false, showInput = true }) {
   const [inputValue, setInputValue] = useState(value.toString())
 
   const handleSliderChange = (e) => {
@@ -66,19 +66,21 @@ export default function WeightSlider({ value, onChange, disabled = false, showPe
         </div>
       </div>
       
-      <div className="relative w-20">
-        <input
-          type="text"
-          value={inputValue}
-          onChange={handleInputChange}
-          onBlur={handleBlur}
-          disabled={disabled}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-center font-mono"
-        />
-        {showPercentage && (
-          <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
-        )}
-      </div>
+      {showInput && (
+        <div className="relative w-20">
+          <input
+            type="text"
+            value={inputValue}
+            onChange={handleInputChange}
+            onBlur={handleBlur}
+            disabled={disabled}
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 dark:bg-gray-800 rounded-lg text-center font-mono"
+          />
+          {showPercentage && (
+            <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">%</span>
+          )}
+        </div>
+      )}
       
       <button
         onClick={increment}
