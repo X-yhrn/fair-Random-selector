@@ -1,35 +1,35 @@
-import { useState, useEffect } from 'react'
-import WeightSlider from './WeightSlider'
-import ConfirmModal from './ConfirmModal'
+import { useState, useEffect } from 'react';
+import WeightSlider from './WeightSlider';
+import ConfirmModal from './ConfirmModal';
 
 /**
- * 选项管理组件
- * 允许用户添加、编辑和删除选项，以及管理自定义emoji
+ * 移动端选项管理组件
+ * 专为移动设备优化的选项管理界面
  */
-export default function OptionManager({ options, setOptions, mode, theme, normalizedOptions, updateWeight }) {
-  const [newOption, setNewOption] = useState({ name: '', emoji: '📝' })
-  const [isEmojiPanelOpen, setIsEmojiPanelOpen] = useState(false)
-  const [customEmojiInput, setCustomEmojiInput] = useState('')
-  const [showAlert, setShowAlert] = useState(false)
-  const [alertMessage, setAlertMessage] = useState('')
+export default function MobileOptionManager({ options, setOptions, mode, theme, normalizedOptions, updateWeight }) {
+  const [newOption, setNewOption] = useState({ name: '', emoji: '📝' });
+  const [isEmojiPanelOpen, setIsEmojiPanelOpen] = useState(false);
+  const [customEmojiInput, setCustomEmojiInput] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
   
   // Emoji库 - 从localStorage加载或使用默认
   const [emojiList, setEmojiList] = useState(() => {
-    const saved = localStorage.getItem('emojiList')
+    const saved = localStorage.getItem('emojiList');
     return saved ? JSON.parse(saved) : [
       '🍕', '🍔', '🥗', '☕', '🎮', '📚', '🎵', '🎬', '🚗', '🏠',
       '✈️', '🎨', '🎤', '🎹', '💧', '🌱', '🌸', '🍂', '❄️', '🌙'
-    ]
-  })
+    ];
+  });
 
   // 拖拽相关状态
-  const [draggedEmoji, setDraggedEmoji] = useState(null)
-  const [dragOverIndex, setDragOverIndex] = useState(null)
+  const [draggedEmoji, setDraggedEmoji] = useState(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
 
   // 保存Emoji列表到localStorage
   useEffect(() => {
-    localStorage.setItem('emojiList', JSON.stringify(emojiList))
-  }, [emojiList])
+    localStorage.setItem('emojiList', JSON.stringify(emojiList));
+  }, [emojiList]);
 
   /**
    * 添加新选项
@@ -37,32 +37,32 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
    */
   const addOption = () => {
     if (!newOption.name.trim()) {
-      setAlertMessage('请输入选项名称')
-      setShowAlert(true)
-      return
+      setAlertMessage('请输入选项名称');
+      setShowAlert(true);
+      return;
     }
     
     const defaultWeight = mode === 'preference' ? 50 : 
-                         mode === 'fate' ? Math.floor(Math.random() * 100) + 1 : 1
+                         mode === 'fate' ? Math.floor(Math.random() * 100) + 1 : 1;
     
     const newOpt = {
       id: Date.now(),
       name: newOption.name,
       emoji: newOption.emoji,
       weight: defaultWeight
-    }
+    };
     
-    setOptions([...options, newOpt])
-    setNewOption({ name: '', emoji: '📝' })
-  }
+    setOptions([...options, newOpt]);
+    setNewOption({ name: '', emoji: '📝' });
+  };
 
   /**
    * 删除指定选项
    * @param {number} id - 选项ID
    */
   const removeOption = (id) => {
-    setOptions(options.filter(opt => opt.id !== id))
-  }
+    setOptions(options.filter(opt => opt.id !== id));
+  };
 
   /**
    * 更新选项的emoji
@@ -72,8 +72,8 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
   const updateEmoji = (id, emoji) => {
     setOptions(options.map(opt => 
       opt.id === id ? { ...opt, emoji } : opt
-    ))
-  }
+    ));
+  };
 
   /**
    * 更新选项的名称
@@ -83,23 +83,23 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
   const updateName = (id, name) => {
     setOptions(options.map(opt => 
       opt.id === id ? { ...opt, name } : opt
-    ))
-  }
+    ));
+  };
 
   // 添加自定义Emoji
   const addCustomEmoji = () => {
-    if (!customEmojiInput.trim()) return
+    if (!customEmojiInput.trim()) return;
     
-    const emoji = customEmojiInput.trim()
+    const emoji = customEmojiInput.trim();
     // 避免重复
     if (!emojiList.includes(emoji)) {
-      const updatedEmojis = [emoji, ...emojiList]
-      setEmojiList(updatedEmojis)
+      const updatedEmojis = [emoji, ...emojiList];
+      setEmojiList(updatedEmojis);
     }
     
-    setNewOption({...newOption, emoji})
-    setCustomEmojiInput('')
-  }
+    setNewOption({...newOption, emoji});
+    setCustomEmojiInput('');
+  };
 
   /**
    * 移除指定位置的emoji
@@ -107,11 +107,11 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
    * @param {Event} e - 点击事件
    */
   const removeEmoji = (index, e) => {
-    e.stopPropagation()
-    const updatedEmojis = [...emojiList]
-    updatedEmojis.splice(index, 1)
-    setEmojiList(updatedEmojis)
-  }
+    e.stopPropagation();
+    const updatedEmojis = [...emojiList];
+    updatedEmojis.splice(index, 1);
+    setEmojiList(updatedEmojis);
+  };
 
   /**
    * 处理emoji拖拽开始
@@ -119,16 +119,16 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
    * @param {Event} e - 拖拽事件
    */
   const handleDragStart = (index, e) => {
-    setDraggedEmoji(emojiList[index])
-    e.dataTransfer.setData('text/plain', index.toString())
-    e.dataTransfer.effectAllowed = 'move'
-  }
+    setDraggedEmoji(emojiList[index]);
+    e.dataTransfer.setData('text/plain', index.toString());
+    e.dataTransfer.effectAllowed = 'move';
+  };
 
   // 拖拽结束
   const handleDragEnd = () => {
-    setDraggedEmoji(null)
-    setDragOverIndex(null)
-  }
+    setDraggedEmoji(null);
+    setDragOverIndex(null);
+  };
 
   /**
    * 处理拖拽经过事件
@@ -136,15 +136,15 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
    * @param {Event} e - 拖拽事件
    */
   const handleDragOver = (index, e) => {
-    e.preventDefault()
-    setDragOverIndex(index)
-    e.dataTransfer.dropEffect = 'move'
-  }
+    e.preventDefault();
+    setDragOverIndex(index);
+    e.dataTransfer.dropEffect = 'move';
+  };
 
   // 拖拽离开
   const handleDragLeave = () => {
-    setDragOverIndex(null)
-  }
+    setDragOverIndex(null);
+  };
 
   /**
    * 处理放置事件
@@ -152,30 +152,30 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
    * @param {Event} e - 拖拽事件
    */
   const handleDrop = (dropIndex, e) => {
-    e.preventDefault()
-    const dragIndex = parseInt(e.dataTransfer.getData('text/plain'))
+    e.preventDefault();
+    const dragIndex = parseInt(e.dataTransfer.getData('text/plain'));
     
     if (dragIndex !== dropIndex && !isNaN(dragIndex)) {
-      const newEmojiList = [...emojiList]
-      const [draggedItem] = newEmojiList.splice(dragIndex, 1)
-      newEmojiList.splice(dropIndex, 0, draggedItem)
-      setEmojiList(newEmojiList)
+      const newEmojiList = [...emojiList];
+      const [draggedItem] = newEmojiList.splice(dragIndex, 1);
+      newEmojiList.splice(dropIndex, 0, draggedItem);
+      setEmojiList(newEmojiList);
     }
     
-    setDraggedEmoji(null)
-    setDragOverIndex(null)
+    setDraggedEmoji(null);
+    setDragOverIndex(null);
     if (e.currentTarget) {
-      e.currentTarget.style.opacity = '1'
+      e.currentTarget.style.opacity = '1';
     }
-  }
+  };
 
   /**
    * 计算所有选项的总权重
    * @returns {number} 总权重值
    */
   const getTotalWeight = () => {
-    return options.reduce((sum, opt) => sum + (opt.weight || 1), 0)
-  }
+    return options.reduce((sum, opt) => sum + (opt.weight || 1), 0);
+  };
 
   /**
    * 渲染单个选项项
@@ -184,7 +184,7 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
    * @returns JSX元素
    */
   const renderOptionItem = (opt, index) => {
-    const displayWeight = normalizedOptions[index]?.displayWeight || opt.weight
+    const displayWeight = normalizedOptions[index]?.displayWeight || opt.weight;
     
     return (
       <div
@@ -194,8 +194,8 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
           : 'bg-gray-900/80 backdrop-blur-sm border border-gray-800'
         }`}
       >
-        <div className="flex flex-col lg:flex-row lg:items-stretch gap-4">
-          {/* 左侧：Emoji和名称 */}
+        <div className="flex flex-col gap-4">
+          {/* 上部分：Emoji和名称 */}
           <div className="flex items-center gap-4 flex-1 min-w-0">
             <div className="relative group">
               <span className="text-3xl">{opt.emoji}</span>
@@ -239,8 +239,8 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
             </div>
           </div>
 
-          {/* 右侧：权重调节和删除 */}
-          <div className="lg:w-2/3">
+          {/* 下部分：权重调节和删除 */}
+          <div className="w-full">
             <div className="mb-3">
               <WeightSlider
                 value={opt.weight}
@@ -264,14 +264,14 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
           </div>
         </div>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <div className="mb-10">
       <div className="flex justify-between items-center mb-6">
         <div className="flex-1">
-          <h2 className="text-2xl font-bold">管理选项</h2>
+          <h2 className="text-xl font-bold">管理选项</h2>
         </div>
         <div className={`text-right ${theme === 'light' ? 'text-gray-600' : 'text-gray-400'}`}>
           当前选项数: <span className="font-bold text-blue-600 dark:text-blue-400">{options.length}</span>
@@ -290,10 +290,10 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
       }`}>
         
         {/* Emoji选择器 */}
-        <div className="mb-6 relative"> {/* 添加relative定位 */}
+        <div className="mb-6 relative">
           <div className="flex justify-between items-center mb-3">
             <div className="flex items-center gap-3">
-              <h3 className="text-lg font-semibold">选择表情符号</h3>
+              <h3 className="text-base font-semibold">选择表情符号</h3>
             </div>
             <div className="flex items-center gap-3">
               <span className={`text-xs ${theme === 'light' ? 'text-gray-500' : 'text-gray-400'}`}>
@@ -373,7 +373,7 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
 
           {/* 展开的表情面板 - 现在是覆盖在下方的弹出框 */}
           {isEmojiPanelOpen && (
-            <div className={`absolute z-10 w-full p-4 rounded-xl shadow-2xl ${theme === 'light'
+            <div className={`absolute left-0 z-10 w-full max-w-[95vw] p-4 rounded-xl shadow-2xl ${theme === 'light'
               ? 'bg-white border border-gray-300'
               : 'bg-gray-800 border border-gray-700'
             }`}>
@@ -391,7 +391,7 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-col gap-2">
                   <input
                     type="text"
                     value={customEmojiInput}
@@ -411,7 +411,7 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
 
               {/* 完整的Emoji库 */}
               <div 
-                className={`grid grid-cols-8 sm:grid-cols-10 gap-2 max-h-80 overflow-y-auto p-4 rounded-lg ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'}`}
+                className={`grid grid-cols-4 gap-2 max-h-80 overflow-y-auto p-4 rounded-lg ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'}`}
                 onDragOver={(e) => {
                   e.preventDefault()
                   e.dataTransfer.dropEffect = 'move'
@@ -453,34 +453,32 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
         </div>
 
         {/* 选项输入区域 */}
-        <div className="flex flex-col sm:flex-row gap-4 items-end">
-          <div className="flex-1">
-            <div className="flex items-center gap-4 mb-2">
-              <div className={`text-4xl p-3 rounded-xl ${theme === 'light'
-                ? 'bg-white border border-gray-300'
-                : 'bg-gray-800 border border-gray-700'
-              }`}>
-                {newOption.emoji}
-              </div>
-              <div className="flex-1">
-                <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
-                  当前选中: <span className="font-bold">{newOption.emoji}</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="输入选项描述..."
-                  value={newOption.name}
-                  onChange={(e) => setNewOption({...newOption, name: e.target.value})}
-                  className={`w-full px-4 py-3 text-lg border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${theme === 'light' ? 'bg-white' : 'bg-gray-800 text-white'}`}
-                  onKeyDown={(e) => e.key === 'Enter' && addOption()}
-                />
-              </div>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center gap-4 mb-2">
+            <div className={`text-4xl p-3 rounded-xl ${theme === 'light'
+              ? 'bg-white border border-gray-300'
+              : 'bg-gray-800 border border-gray-700'
+            }`}>
+              {newOption.emoji}
+            </div>
+            <div className="flex-1">
+              <label className={`block text-sm font-medium mb-2 ${theme === 'light' ? 'text-gray-700' : 'text-gray-300'}`}>
+                当前选中: <span className="font-bold">{newOption.emoji}</span>
+              </label>
+              <input
+                type="text"
+                placeholder="输入选项描述..."
+                value={newOption.name}
+                onChange={(e) => setNewOption({...newOption, name: e.target.value})}
+                className={`w-full px-4 py-3 text-lg border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition ${theme === 'light' ? 'bg-white' : 'bg-gray-800 text-white'}`}
+                onKeyDown={(e) => e.key === 'Enter' && addOption()}
+              />
             </div>
           </div>
           
           <button
             onClick={addOption}
-            className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl"
+            className="px-8 py-3 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl w-full"
           >
             添加选项
           </button>
@@ -502,7 +500,7 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
           ? 'border-gray-300' 
           : 'border-gray-700'
         }`}>
-          <div className="max-h-96 overflow-y-auto"> {/* 添加滚动容器 */}
+          <div className="max-h-96 overflow-y-auto">
             <div className="p-4">
               {options.map((opt, index) => renderOptionItem(opt, index))}
             </div>
@@ -521,5 +519,5 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
         theme={theme}
       />
     </div>
-  )
+  );
 }

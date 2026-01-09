@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import ThemeToggle from './components/ThemeToggle'
 import ModeSelector from './components/ModeSelector'
 import OptionManager from './components/OptionManager'
+import MobileOptionManager from './components/MobileOptionManager'
 import DiceButton from './components/DiceButton'
 import ResultModal from './components/ResultModal'
 import HistoryPanel from './components/HistoryPanel'
@@ -263,15 +264,29 @@ function App() {
     window.location.reload();
   };
 
+  // 检测屏幕尺寸以确定是否为移动端
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <div className={`min-h-screen transition-colors duration-300 ${theme === 'light' ? 'bg-gradient-light text-gray-800' : 'bg-gradient-dark text-gray-100'}`}>
       <div className="container mx-auto px-4 py-8 max-w-6xl">
-        <header className="flex justify-between items-center mb-10">
-          <div>
-            <h1 className="text-3xl font-bold">这是一个可以调整概率可以内定结果的很公平的随机选择器</h1>
+        <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-10 gap-4">
+          <div className="flex flex-row w-full justify-between items-center">
+            <h1 className="text-2xl sm:text-3xl font-bold">这是一个可以调整概率的随机选择器</h1>
+            <div className="ml-4">
+              <ThemeToggle theme={theme} setTheme={setTheme} />
+            </div>
             {/* <p className="text-gray-600 dark:text-gray-400 mt-2">选择困难症的救星</p> */}
           </div>
-          <ThemeToggle theme={theme} setTheme={setTheme} />
         </header>
 
         <main>
@@ -282,14 +297,25 @@ function App() {
             <div className="lg:w-2/3">
               <div className={`rounded-2xl p-6 shadow-xl backdrop-blur-sm ${theme === 'light' ? 'bg-white/80' : 'bg-gray-900/80 border border-gray-800'}`}>
                 {/* 左侧容器不再设置固定高度，由内部内容自然撑开 */}
-                <OptionManager 
-                  options={options} 
-                  setOptions={setOptions} 
-                  mode={mode}
-                  theme={theme}
-                  normalizedOptions={normalizedOptions}
-                  updateWeight={updateWeight}
-                />
+                {isMobile ? (
+                  <MobileOptionManager 
+                    options={options} 
+                    setOptions={setOptions} 
+                    mode={mode}
+                    theme={theme}
+                    normalizedOptions={normalizedOptions}
+                    updateWeight={updateWeight}
+                  />
+                ) : (
+                  <OptionManager 
+                    options={options} 
+                    setOptions={setOptions} 
+                    mode={mode}
+                    theme={theme}
+                    normalizedOptions={normalizedOptions}
+                    updateWeight={updateWeight}
+                  />
+                )}
               </div>
             </div>
 
