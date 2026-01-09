@@ -411,7 +411,7 @@ export default function MobileOptionManager({ options, setOptions, mode, theme, 
 
               {/* 完整的Emoji库 */}
               <div 
-                className={`grid grid-cols-4 gap-2 max-h-80 overflow-y-auto p-4 rounded-lg ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'}`}
+                className={`grid grid-cols-3 gap-2 max-h-80 overflow-y-auto p-4 rounded-lg ${theme === 'light' ? 'bg-gray-100' : 'bg-gray-800'}`}
                 onDragOver={(e) => {
                   e.preventDefault()
                   e.dataTransfer.dropEffect = 'move'

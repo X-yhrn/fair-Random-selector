@@ -62,7 +62,6 @@ export default function WeightSlider({ value, onChange, disabled = false, showPe
         />
         <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mt-1">
           <span>0</span>
-          <span>权重调节</span>
           <span>100</span>
         </div>
       </div>
