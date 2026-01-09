@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 
-// 假设 ConfirmModal 已经存在于同目录下
+// 历史记录面板组件
+// 显示用户的决策历史和收藏记录
 import ConfirmModal from './ConfirmModal'
 
 export default function HistoryPanel({ history, decisionSets, theme, setOptions, setMode }) {
@@ -8,7 +9,7 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
   const [favorites, setFavorites] = useState([])
   const [editedTitles, setEditedTitles] = useState({})
   
-  // 1. 修改点：为三个标签页分别管理展开状态
+  // 为三个标签页分别管理展开状态
   const [tabExpandedState, setTabExpandedState] = useState({
     recent: false,
     favorite: false,
@@ -22,7 +23,11 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
   const [reuseSetConfirm, setReuseSetConfirm] = useState(null)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
 
-  // 辅助函数：更新某个标签页的展开状态
+  /**
+   * 更新指定标签页的展开状态
+   * @param {string} tab - 标签页名称
+   * @param {boolean} isExpanded - 是否展开
+   */
   const setTabExpanded = (tab, isExpanded) => {
     setTabExpandedState(prev => ({ ...prev, [tab]: isExpanded }))
   }
@@ -30,6 +35,7 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
   // 获取当前激活标签页的展开状态
   const isCurrentTabExpanded = tabExpandedState[activeTab]
 
+  // 加载收藏记录
   useEffect(() => {
     const savedFavorites = localStorage.getItem('favoriteDecisions')
     if (savedFavorites) {
@@ -37,6 +43,10 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     }
   }, [])
 
+  /**
+   * 切换收藏状态
+   * @param {number} id - 记录ID
+   */
   const toggleFavorite = (id) => {
     let newFavorites
     if (favorites.includes(id)) {
@@ -48,7 +58,9 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     localStorage.setItem('favoriteDecisions', JSON.stringify(newFavorites))
   }
 
-  // 处理删除记录
+  /**
+   * 处理删除记录
+   */
   const handleDeleteRecord = () => {
     if (!recordToDelete) return
     
@@ -58,7 +70,9 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     window.location.reload()
   }
 
-  // 处理删除决策集
+  /**
+   * 处理删除决策集
+   */
   const handleDeleteSet = () => {
     if (!setToDelete) return
     
@@ -70,7 +84,9 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     window.location.reload()
   }
 
-  // 处理复用决策
+  /**
+   * 处理复用决策
+   */
   const handleReuseDecision = () => {
     if (!reuseConfirm) return
     
@@ -80,7 +96,9 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // 处理复用决策集
+  /**
+   * 处理复用决策集
+   */
   const handleReuseDecisionSet = () => {
     if (!reuseSetConfirm) return
     
@@ -90,32 +108,48 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  // 确认删除记录
+  /**
+   * 确认删除记录
+   * @param {number} id - 记录ID
+   */
   const confirmDeleteRecord = (id) => {
     setRecordToDelete(id)
   }
 
-  // 确认删除决策集
+  /**
+   * 确认删除决策集
+   * @param {string} hash - 决策集哈希
+   */
   const confirmDeleteSet = (hash) => {
     setSetToDelete(hash)
   }
 
-  // 确认复用决策
+  /**
+   * 确认复用决策
+   * @param {object} record - 决策记录
+   */
   const confirmReuseDecision = (record) => {
     setReuseConfirm(record)
   }
 
-  // 确认复用决策集
+  /**
+   * 确认复用决策集
+   * @param {object} decisionSet - 决策集
+   */
   const confirmReuseDecisionSet = (decisionSet) => {
     setReuseSetConfirm(decisionSet)
   }
 
-  // 确认清空历史
+  /**
+   * 确认清空历史
+   */
   const confirmClearHistory = () => {
     setShowClearConfirm(true)
   }
 
-  // 处理清空全部历史
+  /**
+   * 处理清空全部历史
+   */
   const handleClearAll = () => {
     localStorage.removeItem('decisionHistory')
     localStorage.removeItem('decisionSets')
@@ -124,6 +158,11 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     window.location.reload()
   }
 
+  /**
+   * 获取模式对应的emoji
+   * @param {string} mode - 模式名称
+   * @returns {string} emoji字符
+   */
   const getModeEmoji = (mode) => {
     switch(mode) {
       case 'fair': return '🎲'
@@ -133,6 +172,11 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     }
   }
 
+  /**
+   * 获取模式名称
+   * @param {string} mode - 模式名称
+   * @returns {string} 显示名称
+   */
   const getModeName = (mode) => {
     switch(mode) {
       case 'fair': return '公平'
@@ -142,10 +186,19 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     }
   }
 
+  /**
+   * 处理标题编辑
+   * @param {number} id - 记录ID
+   * @param {string} newTitle - 新标题
+   */
   const handleTitleEdit = (id, newTitle) => {
     setEditedTitles({...editedTitles, [id]: newTitle})
   }
 
+  /**
+   * 保存标题编辑
+   * @param {number} id - 记录ID
+   */
   const saveTitleEdit = (id) => {
     const updatedHistory = history.map(record => 
       record.id === id 
@@ -157,7 +210,10 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     setEditedTitles({...editedTitles})
   }
 
-  // 按标签筛选记录
+  /**
+   * 按标签筛选记录
+   * @returns {Array} 筛选后的记录数组
+   */
   const getFilteredRecords = () => {
     let filtered = [...history]
     
@@ -176,6 +232,10 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     return filtered
   }
 
+  /**
+   * 获取要显示的项目
+   * @returns {Array} 显示项目数组
+   */
   const getDisplayItems = () => {
     if (activeTab === 'frequent') {
       return getFilteredRecords()
@@ -183,16 +243,31 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
     return getFilteredRecords()
   }
 
+  /**
+   * 格式化时间戳
+   * @param {string} timestamp - 时间戳字符串
+   * @returns {string} 格式化的时间
+   */
   const formatDate = (timestamp) => {
     return timestamp
   }
 
+  /**
+   * 格式化计数
+   * @param {number} count - 数量
+   * @returns {string} 格式化后的数量
+   */
   const formatCount = (count) => {
     if (count >= 1000) return `${(count / 1000).toFixed(1)}k`
     return count.toString()
   }
 
-  // 渲染单条记录的函数
+  /**
+   * 渲染单条记录的函数
+   * @param {object} item - 记录项
+   * @param {boolean} isDecisionSet - 是否为决策集
+   * @returns {JSX.Element} 记录项组件
+   */
   const renderRecordItem = (item, isDecisionSet = false) => {
     const isFavorite = favorites.includes(item.id)
     const customTitle = editedTitles[item.id] !== undefined 
@@ -340,10 +415,9 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
   const displayItems = getDisplayItems()
   const isFrequentTab = activeTab === 'frequent'
   
-  // 2. 修改点：统一的渲染逻辑
-  // 根据当前标签页的展开状态，决定渲染“滚动容器”还是“平铺列表”
+  // 根据当前标签页的展开状态，决定渲染"滚动容器"还是"平铺列表"
   const renderListContent = () => {
-    // 如果当前标签页是“展开”状态，则平铺渲染所有项目
+    // 如果当前标签页是"展开"状态，则平铺渲染所有项目
     if (isCurrentTabExpanded) {
       return (
         <div className="space-y-4">
@@ -368,7 +442,7 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
             </div>
           </div>
           
-          {/* 3. 修改点：底部操作栏 - 提示当前在滚动模式，并可切换到平铺 */}
+          {/* 底部操作栏 - 提示当前在滚动模式，并可切换到平铺 */}
           {displayItems.length > 0 && (
             <div className={`p-4 border-t flex justify-between items-center ${theme === 'light'
               ? 'bg-gray-100 border-gray-300'
@@ -451,10 +525,10 @@ export default function HistoryPanel({ history, decisionSets, theme, setOptions,
         </div>
       ) : (
         <div>
-          {/* 4. 修改点：使用统一的渲染函数 */}
+          {/* 使用统一的渲染函数 */}
           {renderListContent()}
 
-          {/* 5. 修改点：当处于平铺展开状态时，显示收起按钮 */}
+          {/* 当处于平铺展开状态时，显示收起按钮 */}
           {isCurrentTabExpanded && (
             <div className="mt-6 text-center">
               <button

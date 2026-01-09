@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react'
 import WeightSlider from './WeightSlider'
 import ConfirmModal from './ConfirmModal'
 
+/**
+ * 选项管理组件
+ * 允许用户添加、编辑和删除选项，以及管理自定义emoji
+ */
 export default function OptionManager({ options, setOptions, mode, theme, normalizedOptions, updateWeight }) {
   const [newOption, setNewOption] = useState({ name: '', emoji: '📝' })
   const [isEmojiPanelOpen, setIsEmojiPanelOpen] = useState(false)
@@ -27,6 +31,10 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
     localStorage.setItem('emojiList', JSON.stringify(emojiList))
   }, [emojiList])
 
+  /**
+   * 添加新选项
+   * 验证输入并根据当前模式设置默认权重
+   */
   const addOption = () => {
     if (!newOption.name.trim()) {
       setAlertMessage('请输入选项名称')
@@ -48,16 +56,30 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
     setNewOption({ name: '', emoji: '📝' })
   }
 
+  /**
+   * 删除指定选项
+   * @param {number} id - 选项ID
+   */
   const removeOption = (id) => {
     setOptions(options.filter(opt => opt.id !== id))
   }
 
+  /**
+   * 更新选项的emoji
+   * @param {number} id - 选项ID
+   * @param {string} emoji - 新emoji
+   */
   const updateEmoji = (id, emoji) => {
     setOptions(options.map(opt => 
       opt.id === id ? { ...opt, emoji } : opt
     ))
   }
 
+  /**
+   * 更新选项的名称
+   * @param {number} id - 选项ID
+   * @param {string} name - 新名称
+   */
   const updateName = (id, name) => {
     setOptions(options.map(opt => 
       opt.id === id ? { ...opt, name } : opt
@@ -79,7 +101,11 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
     setCustomEmojiInput('')
   }
 
-  // 移除Emoji
+  /**
+   * 移除指定位置的emoji
+   * @param {number} index - emoji索引
+   * @param {Event} e - 点击事件
+   */
   const removeEmoji = (index, e) => {
     e.stopPropagation()
     const updatedEmojis = [...emojiList]
@@ -87,7 +113,11 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
     setEmojiList(updatedEmojis)
   }
 
-  // 拖拽开始
+  /**
+   * 处理emoji拖拽开始
+   * @param {number} index - 拖拽的emoji索引
+   * @param {Event} e - 拖拽事件
+   */
   const handleDragStart = (index, e) => {
     setDraggedEmoji(emojiList[index])
     e.dataTransfer.setData('text/plain', index.toString())
@@ -100,7 +130,11 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
     setDragOverIndex(null)
   }
 
-  // 拖拽经过
+  /**
+   * 处理拖拽经过事件
+   * @param {number} index - 目标索引
+   * @param {Event} e - 拖拽事件
+   */
   const handleDragOver = (index, e) => {
     e.preventDefault()
     setDragOverIndex(index)
@@ -112,7 +146,11 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
     setDragOverIndex(null)
   }
 
-  // 放置
+  /**
+   * 处理放置事件
+   * @param {number} dropIndex - 放置的目标索引
+   * @param {Event} e - 拖拽事件
+   */
   const handleDrop = (dropIndex, e) => {
     e.preventDefault()
     const dragIndex = parseInt(e.dataTransfer.getData('text/plain'))
@@ -131,12 +169,20 @@ export default function OptionManager({ options, setOptions, mode, theme, normal
     }
   }
 
-  // 计算总权重
+  /**
+   * 计算所有选项的总权重
+   * @returns {number} 总权重值
+   */
   const getTotalWeight = () => {
     return options.reduce((sum, opt) => sum + (opt.weight || 1), 0)
   }
 
-  // 渲染单个选项项
+  /**
+   * 渲染单个选项项
+   * @param {Object} opt - 选项对象
+   * @param {number} index - 选项索引
+   * @returns JSX元素
+   */
   const renderOptionItem = (opt, index) => {
     const displayWeight = normalizedOptions[index]?.displayWeight || opt.weight
     

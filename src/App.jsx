@@ -8,18 +8,18 @@ import HistoryPanel from './components/HistoryPanel'
 import ConfirmModal from './components/ConfirmModal'
 
 function App() {
-  // 核心状态 - 默认偏好模式
-  const [theme, setTheme] = useState('light')
-  const [mode, setMode] = useState('preference')
+  // 应用程序的核心状态
+  const [theme, setTheme] = useState('light') // 当前主题 ('light' 或 'dark')
+  const [mode, setMode] = useState('preference') // 当前模式 ('fair', 'preference', 'fate')
   const [options, setOptions] = useState([
     { id: 1, name: '这个网页太棒了', emoji: '🥰', weight: 100 },
     { id: 2, name: '这个网页好差劲', emoji: '🙄', weight: 0 }
   ])
-  const [showModal, setShowModal] = useState(false)
-  const [result, setResult] = useState(null)
-  const [isAnimating, setIsAnimating] = useState(false)
-  const [history, setHistory] = useState([])
-  const [decisionSets, setDecisionSets] = useState([])
+  const [showModal, setShowModal] = useState(false) // 是否显示结果模态框
+  const [result, setResult] = useState(null) // 掷骰子的结果
+  const [isAnimating, setIsAnimating] = useState(false) // 是否正在播放动画
+  const [history, setHistory] = useState([]) // 决策历史记录
+  const [decisionSets, setDecisionSets] = useState([]) // 决策集（选项配置）
   const [preferenceWeights, setPreferenceWeights] = useState({}) // 保存偏好模式的权重
   const [fateWeights, setFateWeights] = useState({}) // 保存命运模式的权重
 
@@ -33,7 +33,11 @@ function App() {
         Math.round((opt.weight / totalWeight) * 100) : 
         opt.weight
   }))
-  // 替换原来的 setMode 函数调用，或者创建一个新的处理函数
+
+  /**
+   * 处理模式变更
+   * 保存当前权重并根据新模式设置新权重
+   */
   const handleModeChange = (newMode) => {
     // 如果是从偏好模式切换到其他模式，保存当前权重
     if (mode === 'preference') {
@@ -107,7 +111,11 @@ function App() {
     return randoms.map(r => Math.round((r / sum) * 100))
   }
 
-  // 在 App.jsx 中定义这个函数，然后传递给 OptionManager
+  /**
+   * 更新选项权重
+   * @param {number} id - 选项ID
+   * @param {number} weight - 新权重值
+   */
   const updateWeight = (id, weight) => {
     const newWeight = Math.min(100, Math.max(1, weight))
     
@@ -125,7 +133,9 @@ function App() {
     }
   }
 
-  // 重新生成命运模式权重
+  /**
+   * 重新生成命运模式权重
+   */
   const regenerateFateWeights = () => {
     const randomWeights = generateRandomWeights(options.length)
     const newFateWeights = {}
@@ -140,7 +150,10 @@ function App() {
     setOptions(newOptions)
   }
 
-  // 掷骰子逻辑
+  /**
+   * 执行掷骰子逻辑
+   * 根据当前模式计算结果并显示
+   */
   const rollTheDice = () => {
     if (isAnimating || options.length === 0) return
     setIsAnimating(true)

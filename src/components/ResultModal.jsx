@@ -1,8 +1,13 @@
 import { useEffect, useState } from 'react'
 
+/**
+ * 结果模态框组件
+ * 显示掷骰子的结果，并提供再次操作的选项
+ */
 export default function ResultModal({ result, onClose, onRollAgain, theme, mode }) {
   const [isAnimating, setIsAnimating] = useState(false)
 
+  // 阻止背景滚动
   useEffect(() => {
     document.body.style.overflow = 'hidden'
     return () => {
@@ -10,6 +15,10 @@ export default function ResultModal({ result, onClose, onRollAgain, theme, mode 
     }
   }, [])
 
+  /**
+   * 处理再次掷骰子
+   * 触发动画效果后调用父组件的回调
+   */
   const handleRollAgain = () => {
     setIsAnimating(true)
     setTimeout(() => {
@@ -18,6 +27,11 @@ export default function ResultModal({ result, onClose, onRollAgain, theme, mode 
     }, 1000)
   }
 
+  /**
+   * 处理接受结果
+   * 保存结果到历史记录并关闭模态框
+   * @param {string} actionType - 操作类型
+   */
   const handleAccept = (actionType) => {
     // 保存到历史记录
     const history = JSON.parse(localStorage.getItem('decisionHistory') || '[]')
@@ -32,11 +46,15 @@ export default function ResultModal({ result, onClose, onRollAgain, theme, mode 
     onClose()
   }
 
+  /**
+   * 根据当前模式返回描述文本
+   * @returns {string} 模式描述
+   */
   const getModeDescription = () => {
     switch(mode) {
-      case 'fair': return ''
-      case 'preference': return ''
-      case 'fate': return ''
+      case 'fair': return '公平模式：所有选项概率相等'
+      case 'preference': return '偏好模式：根据设定权重决定概率'
+      case 'fate': return '命运模式：随机分配权重'
       default: return ''
     }
   }
